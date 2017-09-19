@@ -19,14 +19,14 @@ resource "aws_api_gateway_resource" "alerts" {
 }
 
 module "get_alerts" {
-  source             = "github.com/epy0n0ff/tf_aws_apigateway_apex"
-  resource_name      = "alerts"
-  http_method        = "GET"
-  parent_path_part   = ""
-  resource_id        = "${aws_api_gateway_resource.alerts.id}"
-  rest_api_id        = "${aws_api_gateway_rest_api.incident-app-team-a.id}"
-  apex_function_arns = "${var.apex_function_arns}"
-  request_templates  = {}
+  source               = "github.com/epy0n0ff/tf_aws_apigateway_apex"
+  resource_path        = "${format("/%s", aws_api_gateway_resource.alerts.path_part)}"
+  http_method          = "GET"
+  resource_id          = "${aws_api_gateway_resource.alerts.id}"
+  rest_api_id          = "${aws_api_gateway_rest_api.incident-app-team-a.id}"
+  lambda_function_name = "get_alerts"
+  apex_function_arns   = "${var.apex_function_arns}"
+  request_templates    = {}
 }
 
 #
@@ -40,12 +40,12 @@ resource "aws_api_gateway_resource" "alerts_mackerel" {
 }
 
 module "alerts_mackerel" {
-  source             = "github.com/epy0n0ff/tf_aws_apigateway_apex"
-  resource_name      = "mackerel"
-  parent_path_part   = "${aws_api_gateway_resource.alerts.path_part}"
-  http_method        = "POST"
-  resource_id        = "${aws_api_gateway_resource.alerts_mackerel.id}"
-  rest_api_id        = "${aws_api_gateway_rest_api.incident-app-team-a.id}"
-  apex_function_arns = "${var.apex_function_arns}"
-  request_templates  = "${var.alerts_request_templates}"
+  source               = "github.com/epy0n0ff/tf_aws_apigateway_apex"
+  resource_path        = "${format("/%s/%s", aws_api_gateway_resource.alerts.path_part,aws_api_gateway_resource.alerts_mackerel.path_part)}"
+  http_method          = "POST"
+  resource_id          = "${aws_api_gateway_resource.alerts_mackerel.id}"
+  rest_api_id          = "${aws_api_gateway_rest_api.incident-app-team-a.id}"
+  apex_function_arns   = "${var.apex_function_arns}"
+  lambda_function_name = "post_alerts_mackerel"
+  request_templates    = "${var.alerts_request_templates}"
 }

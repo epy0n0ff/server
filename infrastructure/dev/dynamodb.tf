@@ -72,4 +72,14 @@ resource "aws_dynamodb_table" "call_history_table" {
     name = "CreatedAt"
     type = "N"
   }
+
+  attribute {
+    name = "CognitoId"
+    type = "S"
+  }
+
+  attribute {
+    name = "Action"
+    type = "S"
+  }
 }
