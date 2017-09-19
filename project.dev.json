@@ -4,5 +4,7 @@
   "memory": 128,
   "timeout": 5,
   "role": "arn:aws:iam::198731954159:role/incident-app-team-a_lambda_function",
-  "environment": {}
+  "environment": {
+    "CALL_HISTORY_TABLE" : "CallHistory"
+  }
 }

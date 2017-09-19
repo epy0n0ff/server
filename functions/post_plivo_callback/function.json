@@ -1,0 +1,6 @@
+{
+  "description": "go build with godep",
+  "hooks": {
+    "build": "dep ensure;GOOS=linux GOARCH=amd64 go build -o main *.go"
+  }
+}
