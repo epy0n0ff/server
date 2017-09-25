@@ -2,7 +2,7 @@ variable "alerts_request_templates" {
   type = "map"
 
   default = {
-    "application/x-www-form-urlencoded" = <<EOF
+    "application/json" = <<EOF
 $input.json('$')
 EOF
   }
