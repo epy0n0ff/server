@@ -53,6 +53,18 @@ resource "aws_api_gateway_resource" "plivo" {
   path_part   = "plivo"
 }
 
+module "plivo_makecall" {
+  source               = "github.com/epy0n0ff/tf_aws_apigateway_apex"
+  resource_path        = "/${aws_api_gateway_resource.plivo.path_part}"
+  http_method          = "POST"
+  resource_id          = "${aws_api_gateway_resource.plivo.id}"
+  rest_api_id          = "${aws_api_gateway_rest_api.incident-app-team-a.id}"
+  apex_function_arns   = "${var.apex_function_arns}"
+  lambda_function_name = "post_makecall"
+  request_templates    = "${var.plivo_request_templates}"
+}
+
+
 #
 # /plivo/callback
 #

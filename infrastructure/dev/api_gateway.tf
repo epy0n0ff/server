@@ -55,3 +55,8 @@ resource "aws_kms_key" "plivo" {
   description = "plivo kms key"
   is_enabled  = true
 }
+
+resource "aws_kms_alias" "plivo_alias" {
+  name = "alias/lambda-plivo"
+  target_key_id  = "${aws_kms_key.plivo.key_id}"
+}
