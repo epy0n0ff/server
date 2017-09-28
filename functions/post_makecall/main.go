@@ -1,27 +1,20 @@
 package main
 
 import (
-	"encoding/json"
-	"os"
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/url"
+	"os"
 
 	"github.com/apex/go-apex"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/kms"
-	"github.com/incident-app-team-a/go-incident/apigateway"
 	"github.com/epy0n0ff/go-plivo"
+	"github.com/incident-app-team-a/go-incident/apigateway"
 )
-
-type MakeCallParam struct {
-	From       string `json:"from"`
-	To         string `json:"to"`
-	IncidentID string `json:"incident_id"`
-	CognitoID  string `json:"cognito_id"`
-}
 
 const region = "ap-northeast-1"
 
@@ -56,12 +49,8 @@ func main() {
 			return nil, err
 		}
 
-		var param MakeCallParam
-		if err := json.Unmarshal([]byte(req.BodyJson), &param); err != nil {
-			fmt.Fprintf(os.Stderr, "unexpected error:%v", err)
-			return nil, err
-		}
-		callbackURL := fmt.Sprintf("%s/%s/%s", string(baseURL), param.IncidentID, param.CognitoID)
+		param := req.BodyJson.(map[string]interface{})
+		callbackURL := fmt.Sprintf("%s/plivo/callback/%s/%s", string(baseURL), param["incident_id"].(string), param["cognito_id"].(string))
 
 		u, err := url.Parse(callbackURL)
 		if err != nil {
@@ -78,7 +67,7 @@ func main() {
 			FallbackMethod: "POST",
 		}
 
-		result, err := c.MakeCall(context.Background(), param.From, param.To, u, ops)
+		result, err := c.MakeCall(context.Background(), param["from"].(string), param["to"].(string), u, ops)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "unexpected error:%v", err)
 			return nil, err
