@@ -64,7 +64,6 @@ module "plivo_makecall" {
   request_templates    = "${var.plivo_request_templates}"
 }
 
-
 #
 # /plivo/callback
 #

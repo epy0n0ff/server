@@ -59,6 +59,6 @@ resource "aws_kms_key" "plivo" {
 }
 
 resource "aws_kms_alias" "plivo_alias" {
-  name = "alias/lambda-plivo"
-  target_key_id  = "${aws_kms_key.plivo.key_id}"
+  name          = "alias/lambda-plivo"
+  target_key_id = "${aws_kms_key.plivo.key_id}"
 }
