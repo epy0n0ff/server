@@ -1,14 +1,18 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
+	"os"
+	"context"
+	"encoding/base64"
 	"fmt"
 	"net/url"
-	"os"
 
 	"github.com/apex/go-apex"
-	"github.com/epy0n0ff/go-incident/apigateway"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/kms"
+	"github.com/incident-app-team-a/go-incident/apigateway"
 	"github.com/epy0n0ff/go-plivo"
 )
 
@@ -19,11 +23,28 @@ type MakeCallParam struct {
 	CognitoID  string `json:"cognito_id"`
 }
 
+const region = "ap-northeast-1"
+
 func main() {
 	apex.HandleFunc(func(event json.RawMessage, ctx *apex.Context) (interface{}, error) {
-		curl := os.Getenv("callback_url")
+		svc := kms.New(session.New(), &aws.Config{
+			Region: aws.String(region),
+		})
 
-		c, err := plivo.NewClient(os.Getenv("plivo_authid"), os.Getenv("plivo_token"))
+		baseURL, err := decryptEnv(svc, "callback_baseurl")
+		if err != nil {
+			return nil, err
+		}
+		authID, err := decryptEnv(svc, "plivo_authid")
+		if err != nil {
+			return nil, err
+		}
+		authToken, err := decryptEnv(svc, "plivo_token")
+		if err != nil {
+			return nil, err
+		}
+
+		c, err := plivo.NewClient(string(authID), string(authToken))
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "unexpected error:%v", err)
 			return nil, err
@@ -40,7 +61,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "unexpected error:%v", err)
 			return nil, err
 		}
-		callbackURL := fmt.Sprintf("%s/%s/%s", curl, param.IncidentID, param.CognitoID)
+		callbackURL := fmt.Sprintf("%s/%s/%s", string(baseURL), param.IncidentID, param.CognitoID)
 
 		u, err := url.Parse(callbackURL)
 		if err != nil {
@@ -66,4 +87,20 @@ func main() {
 		fmt.Fprintf(os.Stderr, "success:%v", result)
 		return nil, nil
 	})
+}
+
+func decryptEnv(k *kms.KMS, key string) ([]byte, error) {
+	env := os.Getenv(key)
+	ib, _ := base64.StdEncoding.DecodeString(env)
+	input := &kms.DecryptInput{
+		CiphertextBlob: []byte(ib),
+	}
+
+	result, err := k.Decrypt(input)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "unexpected error:%v", err)
+		return nil, err
+
+	}
+	return result.Plaintext, nil
 }

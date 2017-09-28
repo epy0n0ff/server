@@ -4,8 +4,8 @@
     "build": "dep ensure;GOOS=linux GOARCH=amd64 go build -o main *.go"
   },
   "environment": {
-    "plivo_authid": "kms encrypted strings",
-    "plivo_token" : "kms encrypted strings",
-    "callback_url" : "todo"
+    "plivo_authid": "AQICAHjV9K/dLJ9G5UHK4Vf9Sw7WTOVBXtYmiE3P/UI9OpMXPgFL2HztUAilSnxdi8j/xffFAAAAcjBwBgkqhkiG9w0BBwagYzBhAgEAMFwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMS9kftrop17jKpJstAgEQgC/uSiPJ+8UcKxtm45Aet2WwI4lazl4b9N/wnX8pPu9sLyH3ktgPwe1I2RwJ/GbjLg==",
+    "plivo_token": "AQICAHjV9K/dLJ9G5UHK4Vf9Sw7WTOVBXtYmiE3P/UI9OpMXPgECuuAzBc1cpb67LRChhxeEAAAAhzCBhAYJKoZIhvcNAQcGoHcwdQIBADBwBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDETUabt4fs2Bd2ycMAIBEIBDYkqw87CCafJz4S07W7PNJ6BiPPDigkb8UzS1rvprr8gKDSLSGXDIkt3XxzG5rPAvTJX+Mo6JanZWrjrwJvExjJdlIw==",
+    "callback_baseurl": "AQICAHjV9K/dLJ9G5UHK4Vf9Sw7WTOVBXtYmiE3P/UI9OpMXPgEM0MvwPOlqok664r4aCQtZAAAAoTCBngYJKoZIhvcNAQcGoIGQMIGNAgEAMIGHBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDAmfoyBIt4qrec1mkgIBEIBaITmfyMIePGliyb49FQ6bgJchq1OZdxzYnqeXxOsUwoi2/2D10zyucFgFY1fikWbVtjw51JIFiNxraE9TTk4ndgunzfiYBp/amFWwJRb8xVnjTpWPHwU8mTSs"
   }
 }
